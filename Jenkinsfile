@@ -19,6 +19,7 @@ pipeline {
                 script{
                     def jobs = [:]
                     for (workload in workloads.tokenize(';')) {
+                        def workload = workload
                         jobs["${workload}"] = {
                             build quietPeriod: 2, job: '/single_workload', parameters: [string(name: 'workload', value: "${workload}"), string(name: 'node_num', value: '1'), string(name: 'cases', value: 'case1-case2-case3'), booleanParam(name: 'all_cases', value: true)]
                         }
