@@ -92,7 +92,7 @@ if __name__ == '__main__':
     if sys.argv[3] == 'None':
         test_cases = get_test_cases(to_test_workload)
     else:
-        test_cases = sys.argv[2].split("-")
+        test_cases = sys.argv[3].split("-")
     # available_nodes = None
     with open("./config.yaml") as f:
         nodes_dict = yaml.safe_load(f)
