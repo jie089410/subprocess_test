@@ -29,11 +29,13 @@ pipeline {
     }
     stage('运行测试') {
         steps{
-            if (all_cases==true) {
-                sh "python3 -u main.py ${workload} ${node_num} None"
-            }
-            else{
-                sh "python3 -u main.py ${workload} ${node_num} ${cases}"
+            script{
+                if (all_cases==true) {
+                    sh "python3 -u main.py ${workload} ${node_num} None"
+                }
+                else{
+                    sh "python3 -u main.py ${workload} ${node_num} ${cases}"
+                }
             }
         }
     }
