@@ -93,8 +93,6 @@ if __name__ == '__main__':
         test_cases = get_test_cases(to_test_workload)
     else:
         test_cases = sys.argv[2].split("-")
-    import ipdb
-    ipdb.set_trace()
     # available_nodes = None
     with open("./config.yaml") as f:
         nodes_dict = yaml.safe_load(f)
