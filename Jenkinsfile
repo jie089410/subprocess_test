@@ -11,13 +11,19 @@ pipeline {
                     if (generate_workloads_from_code==true) {
                         workloads = sh(script: "ls ${WORKSPACE}/workloads", returnStdout: true).trim().replace('\n', ';')
                     }
+                }
+            }
+        }
+        stage('测试workloads'){
+            steps{
+                script{
+                    def jobs = [:]
                     for (workload in workloads.tokenize(';')) {
-                        parallel{
-                            stage("${workload}"){
-                                build job: '/single_workload', parameters: [string(name: 'workload', value: "${workload}"), string(name: 'node_num', value: '1'), string(name: 'cases', value: 'case1-case2-case3'), booleanParam(name: 'all_cases', value: true)]
-                            }
+                        jobs["${workload}"] = {
+                            build job: '/single_workload', parameters: [string(name: 'workload', value: "${workload}"), string(name: 'node_num', value: '1'), string(name: 'cases', value: 'case1-case2-case3'), booleanParam(name: 'all_cases', value: true)]
                         }
                     }
+                    parallel jobs
                 }
             }
         }
