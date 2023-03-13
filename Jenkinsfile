@@ -8,7 +8,7 @@ pipeline {
         stage('获取要测试的workloads') {
             steps {
                 script {
-                    if (generate_workloads_from_code==true) {
+                    if (generate_workloads_from_code) {
                         workloads = sh(script: "ls ${WORKSPACE}/workloads", returnStdout: true).trim().replace('\n', ';')
                     }
                 }
@@ -21,7 +21,11 @@ pipeline {
                     for (workload in workloads.tokenize(';')) {
                         def workload_temp = workload
                         jobs["${workload_temp}"] = {
-                            build quietPeriod: 2, job: '/single_workload', parameters: [string(name: 'workload', value: "${workload_temp}"), string(name: 'node_num', value: '1'), string(name: 'cases', value: 'case1-case2-case3'), booleanParam(name: 'all_cases', value: true)]
+                            build quietPeriod: 2, job: '/single_workload', parameters: [
+                              string(name: 'workload', value: "${workload_temp}"),
+                              string(name: 'node_num', value: '1'),
+                              string(name: 'cases', value: 'case1-case2-case3'),
+                              booleanParam(name: 'all_cases', value: true)]
                         }
                     }
                     parallel jobs

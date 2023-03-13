@@ -30,10 +30,9 @@ pipeline {
     stage('运行测试') {
         steps{
             script{
-                if (all_cases==true) {
+                if (all_cases) {
                     sh "python3 -u ${WORKSPACE}/validation/main.py ${workload} ${node_num} None"
-                }
-                else{
+                }else{
                     sh "python3 -u ${WORKSPACE}/validation/main.py ${workload} ${node_num} ${cases}"
                 }
             }
