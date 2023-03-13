@@ -31,10 +31,10 @@ pipeline {
         steps{
             script{
                 if (all_cases==true) {
-                    sh "python3 -u main.py ${workload} ${node_num} None"
+                    sh "python3 -u ${WORKSPACE}/validation/main.py ${workload} ${node_num} None"
                 }
                 else{
-                    sh "python3 -u main.py ${workload} ${node_num} ${cases}"
+                    sh "python3 -u ${WORKSPACE}/validation/main.py ${workload} ${node_num} ${cases}"
                 }
             }
         }
