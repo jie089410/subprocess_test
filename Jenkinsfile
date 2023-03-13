@@ -1,34 +1,23 @@
 pipeline {
-  agent any
-  parameters {
-        string(name: 'node_num', defaultValue: '1', description: '模拟测试需要的节点数')
-        string(name: 'cases', defaultValue: 'case1-case2-case3', description: '模拟需要测试的用例，格式为case1-case2-case3')
+    agent any
+    parameters {
+        string defaultValue: 'workload1;workload2;workload3', description: '请输入要构建的多个workload名字，以;隔开', name: 'workloads', trim: true
+        booleanParam defaultValue: true, description: '是否从项目中生成需要构建的workloads', name: 'generate_workloads_from_code'
     }
-  stages {
-    stage('Artifactory-config download') {
-      steps {
-      // 测试git diff
-        rtDownload (
-                serverId: 'config_artifactory',
-                spec: '''{
-                    "files": [
-                        {
-                        "pattern": "my_local_repo/config.yaml",
-                        "target": "${WORKSPACE}/"
-                        },
-                        {
-                        "pattern": "my_local_repo/test.sh",
-                        "target": "${WORKSPACE}/"
+    stages {
+        stage('获取要测试的workloads') {
+            steps {
+                script {
+                    if (generate_workloads_from_code==true) {
+                        workloads = sh(script: "ls ${WORKSPACE}/workloads", returnStdout: true).trim().replace('\n', ';')
+                    }
+                    for (workload in workloads.tokenize(';')) {
+                        stage("${workload}"){
+                            build job: 'single_project', parameters: [string(name: 'workload', value: "${workload}"), string(name: 'node_num', value: '1'), string(name: 'cases', value: 'case1-case2-case3'), booleanParam(name: 'all_cases', value: true)]
                         }
-                    ]
-                }''',
-            )
-      }
-    }
-    stage('运行测试') {
-        steps{
-            sh "python3 -u main.py ${node_num} ${cases}"
+                    }
+                }
+            }
         }
     }
-  }
 }

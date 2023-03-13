@@ -1,0 +1,41 @@
+pipeline {
+  agent any
+  parameters {
+        string(name: 'workload', defaultValue: 'workload1', description: '模拟测试需要的workload')
+        string(name: 'node_num', defaultValue: '1', description: '模拟测试需要的节点数')
+        string(name: 'cases', defaultValue: 'case1-case2-case3', description: '模拟需要测试的用例，格式为case1-case2-case3')
+        booleanParam defaultValue: true, description: '是否测试所有的cases', name: 'all_cases'
+    }
+  stages {
+    stage('Artifactory-config download') {
+      steps {
+      // 测试git diff
+        rtDownload (
+                serverId: 'config_artifactory',
+                spec: '''{
+                    "files": [
+                        {
+                        "pattern": "my_local_repo/config.yaml",
+                        "target": "${WORKSPACE}/"
+                        },
+                        {
+                        "pattern": "my_local_repo/test.sh",
+                        "target": "${WORKSPACE}/"
+                        }
+                    ]
+                }''',
+            )
+      }
+    }
+    stage('运行测试') {
+        steps{
+            if (all_cases==true) {
+                sh "python3 -u main.py ${workload} ${node_num} None"
+            }
+            else{
+                sh "python3 -u main.py ${workload} ${node_num} ${cases}"
+            }
+        }
+    }
+  }
+}

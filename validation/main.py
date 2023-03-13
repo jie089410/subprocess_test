@@ -36,6 +36,12 @@ def read_output_from_subprocess(process: subprocess.Popen, zk: KazooClient, pid:
     zk.stop()
 
 
+def get_test_cases(workload: str):
+    with open("../workloads/{}/CMakelists.txt".format(workload)) as f:
+        cases = f.read().split('\n')
+    return cases
+
+
 def run_test(to_test_nodes_num: int, test_cases: list, available_nodes: set):
     # 存放读取子进程输出的线程
     read_threads = []
@@ -80,9 +86,16 @@ def run_test(to_test_nodes_num: int, test_cases: list, available_nodes: set):
 
 
 if __name__ == '__main__':
-    to_test_nodes_num = int(sys.argv[1])
-    test_cases = sys.argv[2].split("-")
-    available_nodes = None
+    to_test_workload = sys.argv[1]
+    to_test_nodes_num = int(sys.argv[2])
+    test_cases = None
+    if sys.argv[3] == 'None':
+        test_cases = get_test_cases(to_test_workload)
+    else:
+        test_cases = sys.argv[2].split("-")
+    import ipdb
+    ipdb.set_trace()
+    # available_nodes = None
     with open("./config.yaml") as f:
         nodes_dict = yaml.safe_load(f)
         available_nodes = set(nodes_dict.get("Machines"))
