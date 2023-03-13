@@ -13,7 +13,7 @@ pipeline {
                     }
                     for (workload in workloads.tokenize(';')) {
                         stage("${workload}"){
-                            build job: 'single_project', parameters: [string(name: 'workload', value: "${workload}"), string(name: 'node_num', value: '1'), string(name: 'cases', value: 'case1-case2-case3'), booleanParam(name: 'all_cases', value: true)]
+                            build job: '/single_workload', parameters: [string(name: 'workload', value: "${workload}"), string(name: 'node_num', value: '1'), string(name: 'cases', value: 'case1-case2-case3'), booleanParam(name: 'all_cases', value: true)]
                         }
                     }
                 }
