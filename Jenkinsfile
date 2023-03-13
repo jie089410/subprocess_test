@@ -7,6 +7,7 @@ pipeline {
   stages {
     stage('Artifactory-config download') {
       steps {
+      // 测试git diff
         rtDownload (
                 serverId: 'config_artifactory',
                 spec: '''{
