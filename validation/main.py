@@ -15,6 +15,7 @@ import threading
 import yaml
 import time
 import logging
+import os
 from kazoo.client import KazooClient
 
 logging.basicConfig(level=logging.INFO,
@@ -37,7 +38,10 @@ def read_output_from_subprocess(process: subprocess.Popen, zk: KazooClient, pid:
 
 
 def get_test_cases(workload: str):
-    with open("../workloads/{}/CMakelists.txt".format(workload)) as f:
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    parent_dir = os.path.dirname(current_dir)
+    path = os.path.join(parent_dir, 'workloads', workload, 'CMakelists.txt')
+    with open(path) as f:
         cases = f.read().split('\n')
     return cases
 
