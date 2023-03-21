@@ -54,7 +54,7 @@ def run_test(to_test_nodes_num: int, test_cases: list, available_nodes: set):
         shell_cmd = 'sh test.sh {} {}'.format(test_time, test_case)
         cmd = shlex.split(shell_cmd)
         # 执行每条case前，建立zk连接, 预定机器
-        zk = KazooClient(hosts="192.168.0.212:2181")
+        zk = KazooClient(hosts="192.168.1.212:2181")
         zk.start()
         lock = zk.Lock("/nodes")
         reserve_completed = False
